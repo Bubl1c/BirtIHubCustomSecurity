@@ -29,10 +29,14 @@ public class SecurityCode extends iPortalSecurityAdapter {
 
     public SecurityCode() {
         logger = CustomFileLogger.getInstance();
+        logger.setDebug(true);
         logger.clear();
     }
 
     public boolean authenticate(HttpServletRequest httpservletrequest) {
+        String ADMIN_USR = "administrator";
+        String ADMIN_PWD = "";
+
         String param = httpservletrequest.getParameter("code");
         boolean secured = true;
         try {
@@ -46,15 +50,15 @@ public class SecurityCode extends iPortalSecurityAdapter {
 
             if("administrator".equalsIgnoreCase(userid)) {
                 logger.log("Authenticated as administrator");
-                setUserName("administrator");
-                setPassword("");
+                setUserName(ADMIN_USR);
+                setPassword(ADMIN_PWD);
                 return true;
             }
 
             if (isAuthenticated(param)) {
                 logger.log("Authenticated as user!");
-                setUserName("amozharovskyi");
-                setPassword("12");
+                setUserName(ADMIN_USR);
+                setPassword(ADMIN_PWD);
             } else {
                 logger.log("NOT Authenticated");
                 secured = false;

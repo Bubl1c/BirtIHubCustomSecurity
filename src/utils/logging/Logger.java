@@ -4,7 +4,7 @@ package utils.logging;
  * Created by Andrii Mozharovskyi on 10.07.2015.
  */
 public abstract class Logger {
-    private boolean debug = true;
+    private boolean debug = false;
 
     public abstract void log(String message);
 
