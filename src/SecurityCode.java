@@ -4,10 +4,10 @@
 import javax.servlet.http.*;
 
 import auth.IAuthenticationValidator;
-import auth.MercuryAuthenticationValidator;
+import auth.impl.MercuryAuthenticationValidator;
 import com.actuate.iportal.security.iPortalSecurityAdapter;
-import utils.CustomFileLogger;
-import utils.Logger;
+import utils.logging.impl.CustomFileLogger;
+import utils.logging.Logger;
 
 public class SecurityCode extends iPortalSecurityAdapter {
     private String volumeProfile = "Default Volume";
@@ -19,7 +19,8 @@ public class SecurityCode extends iPortalSecurityAdapter {
     public static void main(String[] args) {
         try {
             SecurityCode securityCode = new SecurityCode();
-            boolean isAuth = securityCode.isAuthenticated("");
+            boolean isAuth = securityCode.isAuthenticated("ba8f206c-e60b-4ef8-a654-d063812e590b");
+            System.out.println(isAuth);
             int i = 1;
         } catch (Throwable t) {
             t.printStackTrace();
@@ -44,23 +45,23 @@ public class SecurityCode extends iPortalSecurityAdapter {
             logger.log("passwordPar = [" + password + "]");
 
             if("administrator".equalsIgnoreCase(userid)) {
-                logger.log("Administrator entered");
+                logger.log("Authenticated as administrator");
                 setUserName("administrator");
                 setPassword("");
                 return true;
             }
 
             if (isAuthenticated(param)) {
-                logger.log("name = [" + getUserName() + "]" + " pass = [" + getPassword() + "]");
+                logger.log("Authenticated as user!");
                 setUserName("amozharovskyi");
                 setPassword("12");
             } else {
-                logger.log("False returned = [" + userid + "]");
+                logger.log("NOT Authenticated");
                 secured = false;
             }
         } catch(Throwable t) {
             secured = false;
-            logger.err("Catch exc = [" + t.getMessage() + "]");
+            logger.err(t);
         }
         finally {
             logger.log("Secured = [" + secured + "]");
@@ -69,7 +70,7 @@ public class SecurityCode extends iPortalSecurityAdapter {
         return secured;
     }
 
-    private boolean isAuthenticated(String securityCode) {
+    public boolean isAuthenticated(String securityCode) {
         if(securityCode == null || securityCode.equals("")) {
             return false;
         }
