@@ -1,5 +1,6 @@
 package utils.logging.impl;
 
+import utils.PropertiesFileReader;
 import utils.logging.Logger;
 
 import java.io.*;
@@ -9,9 +10,8 @@ import java.io.*;
  */
 public class CustomFileLogger extends Logger {
 
-    private static final String TEST_FILE_PATH = "D:\\Projects\\IhubCustomSecurity";
-
-    private static final String FILE_NAME = "ihub_custom_logs.txt";
+    private static final String LOGGING_FILE_PATH = PropertiesFileReader.get("logging_file_path");
+    private static final String FILE_NAME = PropertiesFileReader.get("logging_file_name");
 
     private static volatile CustomFileLogger instance;
     public static CustomFileLogger getInstance() {
@@ -44,11 +44,14 @@ public class CustomFileLogger extends Logger {
 
     @Override
     public void err(Throwable t) {
+        boolean deb = isDebug();
+        setDebug(true);
         log("--- ERROR stack trace --- " + t.toString());
         for(StackTraceElement s : t.getStackTrace()) {
             log("     " + s);
         }
         log("--- ERROR stack trace END ---");
+        setDebug(deb);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class CustomFileLogger extends Logger {
 
     private PrintWriter getWriter(boolean edit) throws IOException {
         //return new PrintWriter(new BufferedWriter(new FileWriter(getCurrentWorkingDir() + "/" + FILE_NAME, edit)));
-        return new PrintWriter(new BufferedWriter(new FileWriter(TEST_FILE_PATH + "/" + FILE_NAME, edit)));
+        return new PrintWriter(new BufferedWriter(new FileWriter((LOGGING_FILE_PATH.equals("") ? "" : LOGGING_FILE_PATH + "/") + FILE_NAME, edit)));
     }
 
     private String getCurrentWorkingDir() {
